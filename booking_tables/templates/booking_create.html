@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <h1 class="display-4">Бронирование столика</h1>
@@ -9,11 +10,29 @@
         <div class="col-3">
         </div>
         <div class="col-6">
-            <form class="row" method="post" enctype="multipart/form-data">
+            <form class="row" method="post" enctype="multipart/form-data" id="booking-form">
                 <div class="card">
                     <div class="card-body">
                         {% csrf_token %}
-                         <!-- Поле даты -->
+
+                        <!-- Скрытое поле table для Django формы -->
+                        {{ form.table }}
+
+                        <div class="mb-3">
+                            <label for="id_number_of_guests" class="form-label">{{ form.number_of_guests.label }}</label>
+                            {{ form.number_of_guests }}
+                            <div class="form-text" id="guests-help">Укажите количество гостей</div>
+                            {% if form.number_of_guests.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.number_of_guests.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                        </div>
+
+                        <!-- Поле даты -->
                         <div class="mb-4">
                             <label for="id_date" class="form-label">{{ form.date.label }}</label>
                             {{ form.date }}
@@ -28,7 +47,7 @@
                             </div>
 
                             <!-- Скрытое поле для хранения выбранного времени -->
-                            <input type="hidden" name="time" id="selected_time" value="">
+                            <input type="hidden" name="time" id="selected_time" value="{{ form.time.value|default:'' }}">
 
                             {% if form.time.errors %}
                             <div class="invalid-feedback d-block">
@@ -39,25 +58,68 @@
                             {% endif %}
                         </div>
 
-                        <!-- Остальные поля формы -->
-                        {% for field in form %}
-                            {% if field.name != 'date' and field.name != 'time' %}
-                            <div class="mb-3">
-                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                                {{ field }}
-                                {% if field.help_text %}
-                                <div class="form-text">{{ field.help_text }}</div>
-                                {% endif %}
-                                {% for error in field.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
+                        <!-- Плитка столиков -->
+                        <div class="mb-4">
+                            <label class="form-label d-block mb-3">Выберите столик</label>
+                            <div class="tables-grid" id="tables-grid">
+                                {% for table in tables %}
+                                <div class="table-card-wrapper">
+                                    <input type="radio"
+                                           class="btn-check table-radio"
+                                           name="table_input"
+                                           id="table_{{ table.id }}"
+                                           value="{{ table.id }}"
+                                           autocomplete="off"
+                                           data-max-guests="{{ table.max_guests }}">
+                                    <label class="table-card" for="table_{{ table.id }}">
+                                        <div class="table-card-header">
+                                            <h5 class="table-number">Столик №{{ table.number }}</h5>
+                                            {% if table.image %}
+                                            <img src="{{ table.image.url }}"
+                                                 alt="Столик №{{ table.number }}"
+                                                 class="table-image">
+                                            {% else %}
+                                            <div class="table-image-placeholder">
+                                                <i class="fas fa-utensils"></i>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="table-card-body">
+                                            <div class="table-info">
+                                                <span class="table-guests">
+                                                    <i class="fas fa-users"></i>
+                                                    До {{ table.max_guests }} гостей
+                                                </span>
+                                                {% if table.description %}
+                                                <p class="table-description">{{ table.description|truncatechars:100 }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            {% if form.table.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.table.errors %}
+                                {{ error }}
                                 {% endfor %}
                             </div>
                             {% endif %}
-                        {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_comment" class="form-label">{{ form.comment.label }}</label>
+                            {{ form.comment }}
+                            <div class="form-text">Можете оставить комментарии или пожелания</div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        Создать
-                    </button>
+                    <div class="card-body">
+                        <button type="submit" class="btn btn-dark btn-lg w-100 mb-3">
+                            Забронировать
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -65,7 +127,9 @@
         </div>
     </div>
 </div>
+
 <style>
+/* Стили для плитки времени */
 .time-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -90,9 +154,9 @@
 }
 
 .time-btn.active {
-    background-color: #0d6efd;
+    background-color: #212429;
     color: white;
-    border-color: #0d6efd;
+    border-color: #212429;
 }
 
 .time-btn.disabled {
@@ -103,16 +167,164 @@
     color: #6c757d;
 }
 
+/* Стили для плитки столиков */
+.tables-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.table-card-wrapper {
+    position: relative;
+}
+
+.table-card-wrapper input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.table-card {
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: white;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-card:hover {
+    border-color: #424649;
+    box-shadow: 0 0 0 0.25rem rgba(66, 70, 73, 0.1);
+}
+
+.table-card-wrapper input[type="radio"]:checked + .table-card {
+    border-color: #212429;
+    background-color: rgba(33, 36, 41, 0.05);
+}
+
+.table-card-wrapper input[type="radio"]:checked + .table-card .table-number {
+    color: #ffffff;
+    font-weight: bold;
+    -webkit-text-stroke: 1px #212429;
+    font-size: 1.2em;
+    paint-order: stroke fill;
+}
+
+.table-card-header {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.table-number {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.table-image {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.table-image-placeholder {
+    width: 100%;
+    height: 120px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    color: #6c757d;
+    font-size: 2rem;
+}
+
+.table-card-body {
+    flex-grow: 1;
+}
+
+.table-info {
+    font-size: 0.9rem;
+}
+
+.table-guests {
+    display: block;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.table-guests i {
+    margin-right: 5px;
+}
+
+.table-description {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0;
+    line-height: 1.4;
+}
+
+.table-card.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    border-color: #e9ecef;
+}
+
+.table-card.disabled:hover {
+    border-color: #e9ecef;
+    box-shadow: none;
+}
+
+.table-card.invalid-guests {
+    border-color: #dc3545;
+    position: relative;
+}
+
+.table-card.invalid-guests::after {
+    content: "⚠️ Недостаточно мест";
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #dc3545;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+}
+
 /* Для мобильных устройств */
 @media (max-width: 768px) {
     .time-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    .tables-grid {
+        grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 576px) {
     .time-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .col-6 {
+        width: 100%;
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+
+    .col-3 {
+        display: none;
     }
 }
 </style>
@@ -122,6 +334,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const dateInput = document.getElementById('id_date');
     const timeGrid = document.getElementById('time-grid');
     const selectedTimeInput = document.getElementById('selected_time');
+    const tablesGrid = document.getElementById('tables-grid');
+    const tableHiddenInput = document.getElementById('id_table'); // Скрытое поле Django
+    const guestsInput = document.getElementById('id_number_of_guests');
+    const guestsHelp = document.getElementById('guests-help');
     const bookingForm = document.getElementById('booking-form');
 
     // Все доступные времена
@@ -141,6 +357,7 @@ document.addEventListener('DOMContentLoaded', function() {
             timeBtn.className = `time-btn ${timeObj.disabled ? 'disabled' : ''}`;
             timeBtn.textContent = timeObj.label;
             timeBtn.dataset.value = timeObj.value;
+            timeBtn.title = timeObj.disabled ? 'Время недоступно' : 'Выбрать время';
 
             if (!timeObj.disabled) {
                 timeBtn.addEventListener('click', function() {
@@ -154,6 +371,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     // Сохраняем выбранное значение
                     selectedTimeInput.value = this.dataset.value;
+
+                    // Обновляем доступность столиков
+                    validateTableCapacity();
+
+                    // Проверяем занятость столиков
+                    checkTableAvailability(dateInput.value, this.dataset.value);
                 });
             }
 
@@ -165,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateTimeGrid(selectedDate) {
         const today = new Date().toISOString().split('T')[0];
         const now = new Date();
-        const bufferTime = new Date(now.getTime() + 60 * 60 * 1000); // +1 час
+        const bufferTime = new Date(now.getTime() + 60 * 10 * 1000); // +10 минут
 
         const availableTimes = ALL_TIMES.map(timeStr => {
             const [hours, minutes] = timeStr.split(':').map(Number);
@@ -189,6 +412,114 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.time-btn.active').forEach(btn => {
             btn.classList.remove('active');
         });
+
+        // Сбрасываем выбранный столик
+        tableHiddenInput.value = '';
+        document.querySelectorAll('.table-radio:checked').forEach(radio => {
+            radio.checked = false;
+        });
+        document.querySelectorAll('.table-card').forEach(card => {
+            card.classList.remove('active');
+        });
+    }
+
+    // Функция проверки вместимости столиков
+    function validateTableCapacity() {
+        const guests = parseInt(guestsInput.value) || 0;
+        const tableRadios = document.querySelectorAll('.table-radio');
+
+        tableRadios.forEach(radio => {
+            const maxGuests = parseInt(radio.dataset.maxGuests) || 0;
+            const tableCard = radio.nextElementSibling;
+
+            if (guests > maxGuests) {
+                tableCard.classList.add('invalid-guests');
+                radio.disabled = true;
+            } else {
+                tableCard.classList.remove('invalid-guests');
+                radio.disabled = false;
+            }
+        });
+
+        // Обновляем текст помощи
+        if (guests > 0) {
+            guestsHelp.textContent = `Выбрано ${guests} гостей`;
+            guestsHelp.style.color = '#198754';
+        } else {
+            guestsHelp.textContent = 'Укажите количество гостей';
+            guestsHelp.style.color = '#6c757d';
+        }
+    }
+
+    // Функция проверки доступности столиков (AJAX)
+    async function checkTableAvailability(date, time) {
+        if (!date || !time) return;
+
+        try {
+            const response = await fetch(`/api/check-table-availability/?date=${date}&time=${time}`);
+            const data = await response.json();
+
+            const tableRadios = document.querySelectorAll('.table-radio');
+            tableRadios.forEach(radio => {
+                const tableCard = radio.nextElementSibling;
+                const tableId = parseInt(radio.value);
+
+                if (data.occupied_tables && data.occupied_tables.includes(tableId)) {
+                    tableCard.classList.add('disabled');
+                    radio.disabled = true;
+                    tableCard.title = 'Столик занят на выбранное время';
+                } else {
+                    tableCard.classList.remove('disabled');
+                    radio.disabled = false;
+                    tableCard.title = 'Доступен для бронирования';
+                }
+            });
+        } catch (error) {
+            console.error('Ошибка при проверке доступности столиков:', error);
+        }
+    }
+
+    // Инициализация выбора столиков
+    function initializeTableSelection() {
+        const tableRadios = document.querySelectorAll('.table-radio');
+
+        tableRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    // Убираем активный класс у всех карточек
+                    document.querySelectorAll('.table-card').forEach(card => {
+                        card.classList.remove('active');
+                    });
+
+                    // Добавляем активный класс к выбранной
+                    this.nextElementSibling.classList.add('active');
+
+                    // Сохраняем выбранное значение в скрытое поле
+                    tableHiddenInput.value = this.value;
+                }
+            });
+
+            // Инициализируем карточку
+            const tableCard = radio.nextElementSibling;
+            tableCard.addEventListener('click', function() {
+                const radioBtn = this.previousElementSibling;
+                if (!radioBtn.disabled) {
+                    radioBtn.checked = true;
+                    tableHiddenInput.value = radioBtn.value;
+
+                    // Убираем активный класс у всех карточек
+                    document.querySelectorAll('.table-card').forEach(card => {
+                        card.classList.remove('active');
+                    });
+
+                    // Добавляем активный класс к выбранной
+                    this.classList.add('active');
+
+                    // Триггерим событие change
+                    radioBtn.dispatchEvent(new Event('change'));
+                }
+            });
+        });
     }
 
     // Обработчик изменения даты
@@ -196,35 +527,79 @@ document.addEventListener('DOMContentLoaded', function() {
         updateTimeGrid(this.value);
     });
 
+    // Обработчик изменения количества гостей
+    guestsInput.addEventListener('input', function() {
+        validateTableCapacity();
+    });
+
     // Обработчик отправки формы - валидация на клиенте
     bookingForm.addEventListener('submit', function(event) {
         const selectedDate = dateInput.value;
         const selectedTime = selectedTimeInput.value;
+        const selectedTable = tableHiddenInput.value;
+        const guests = parseInt(guestsInput.value) || 0;
         const today = new Date().toISOString().split('T')[0];
 
+        // Проверка времени
+        if (!selectedTime) {
+            event.preventDefault();
+            alert('Пожалуйста, выберите время для бронирования');
+            return false;
+        }
+
+        // Проверка столика
+        if (!selectedTable) {
+            event.preventDefault();
+            alert('Пожалуйста, выберите столик');
+            return false;
+        }
+
+        // Проверка количества гостей
+        if (guests < 1) {
+            event.preventDefault();
+            alert('Пожалуйста, укажите количество гостей');
+            return false;
+        }
+
+        // Проверка времени для сегодняшней даты
         if (selectedDate === today && selectedTime) {
             const now = new Date();
-            const bufferTime = new Date(now.getTime() + 60 * 60 * 1000);
+            const bufferTime = new Date(now.getTime() + 60 * 10 * 1000);
             const [hours, minutes] = selectedTime.split(':').map(Number);
             const selectedTimeObj = new Date();
             selectedTimeObj.setHours(hours, minutes, 0, 0);
 
             if (selectedTimeObj < bufferTime) {
                 event.preventDefault();
-                alert(`На сегодня нельзя выбрать время раньше ${bufferTime.getHours()}:${bufferTime.getMinutes().toString().padStart(2, '0')}`);
+                const bufferTimeStr = `${bufferTime.getHours().toString().padStart(2, '0')}:${bufferTime.getMinutes().toString().padStart(2, '0')}`;
+                alert(`На сегодня нельзя выбрать время раньше ${bufferTimeStr}. Пожалуйста, выберите другое время.`);
                 return false;
             }
         }
 
-        if (!selectedTime) {
-            event.preventDefault();
-            alert('Пожалуйста, выберите время');
-            return false;
+        // Проверка вместимости столика
+        const selectedRadio = document.querySelector(`.table-radio[value="${selectedTable}"]`);
+        if (selectedRadio) {
+            const maxGuests = parseInt(selectedRadio.dataset.maxGuests) || 0;
+            if (guests > maxGuests) {
+                event.preventDefault();
+                alert(`Выбранный столик вмещает только ${maxGuests} гостей. Пожалуйста, выберите другой столик или уменьшите количество гостей.`);
+                return false;
+            }
+
+            // Проверка, что столик не заблокирован
+            if (selectedRadio.disabled) {
+                event.preventDefault();
+                alert('Выбранный столик недоступен для бронирования на это время.');
+                return false;
+            }
         }
     });
 
     // Инициализация при загрузке
     updateTimeGrid(dateInput.value);
+    initializeTableSelection();
+    validateTableCapacity();
 });
 </script>
 {% endblock %}

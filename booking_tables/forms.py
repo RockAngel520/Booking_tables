@@ -1,8 +1,9 @@
 from django.core.exceptions import ValidationError
 import datetime
-from django.forms import ModelForm, BooleanField, DateInput, TimeInput, ChoiceField, Select, RadioSelect, Widget
+from django.forms import ModelForm, BooleanField, DateInput, TimeInput, ChoiceField, Select, RadioSelect, Widget, \
+    Textarea, ModelChoiceField, HiddenInput
 
-from booking_tables.models import Booking
+from booking_tables.models import Booking, Table
 
 class StyleFormMixin:
     def __init__(self, *args, **kwargs):
@@ -46,9 +47,17 @@ class BookingForm(StyleFormMixin, ModelForm):
     ]
 
     time = ChoiceField(
-        choices=ALL_TIME_CHOICES,  # Всегда все варианты
+        choices=ALL_TIME_CHOICES,
         widget=RadioSelect(),
         label='Время'
+    )
+
+    # Добавляем поле table обратно, но скрываем стандартный виджет
+    table = ModelChoiceField(
+        queryset=Table.objects.filter(is_publish=True),
+        widget=HiddenInput(),  # Скрытое поле для валидации
+        required=True,
+        label='Столик'
     )
 
     class Meta:
@@ -60,6 +69,7 @@ class BookingForm(StyleFormMixin, ModelForm):
                 'id': 'id_date',
                 'class': 'form-control',
             }),
+            'comment': Textarea(attrs={'rows': 3}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -73,11 +83,16 @@ class BookingForm(StyleFormMixin, ModelForm):
             'max': two_month_later.isoformat(),
         })
 
+        # Не задаем начальное значение для даты
+        if 'value' in self.fields['date'].widget.attrs:
+            del self.fields['date'].widget.attrs['value']
+
     def clean(self):
-        """Валидация времени с учетом даты"""
+        """Валидация времени с учетом даты и проверка доступности столика"""
         cleaned_data = super().clean()
         date = cleaned_data.get('date')
         time = cleaned_data.get('time')
+        table = cleaned_data.get('table')
 
         if date and time:
             # Если выбрана сегодняшняя дата
@@ -85,12 +100,25 @@ class BookingForm(StyleFormMixin, ModelForm):
                 current_time = datetime.datetime.now().time()
                 time_obj = datetime.datetime.strptime(time, '%H:%M').time()
 
-                # Добавляем буфер 1 час
-                buffer_time = (datetime.datetime.now() + datetime.timedelta(hours=1)).time()
+                # Добавляем буфер 10 минут
+                buffer_time = (datetime.datetime.now() + datetime.timedelta(minutes=10)).time()
 
                 if time_obj < buffer_time:
                     raise ValidationError({
                         'time': f'На сегодня нельзя выбрать время раньше {buffer_time.strftime("%H:%M")}. Текущее время: {current_time.strftime("%H:%M")}'
                     })
+
+        # Проверка доступности столика на выбранное время
+        if date and time and table:
+            existing_booking = Booking.objects.filter(
+                table=table,
+                date=date,
+                time=time
+            ).exists()
+
+            if existing_booking:
+                raise ValidationError({
+                    'table': 'Этот столик уже забронирован на выбранное время'
+                })
 
         return cleaned_data

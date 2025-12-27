@@ -21,7 +21,7 @@
                     <p class="card-text">{{ table.description|truncatechars:100 }}</p>
                     {% if user.is_authenticated == True %}
                     <a class="d-grid gap-2 btn btn-outline-dark"
-                       href="#">Забронировать
+                       href="{% url 'booking_tables:booking_create' %}">Забронировать
                     </a>
                     {% endif %}
                     {% if user.is_authenticated == False %}
