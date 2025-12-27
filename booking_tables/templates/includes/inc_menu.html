@@ -1,0 +1,29 @@
+{% load static %}
+
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom box-shadow bg-dark text-white">
+
+    <p class="my-0 mr-md-auto font-weight-normal text-center">
+        <a href="/">
+            <img src="{% static '/images/logo.png' %}" alt="Кафе Краснодар" class="mx-auto p-2" style="width: 280px;"/>
+        </a>
+        <br>
+        ресторан современных вкусов
+    </p>
+
+    <nav class="ms-5">
+        <a class="p-2 btn btn-light" href="/">Главная</a>
+        <a class="p-2 btn btn-light" href="{% url 'booking_tables:tables' %}">Столики</a>
+        <a class="p-2 btn btn-light" href="{% url 'booking_tables:about' %}">О нас</a>
+        {% if user.is_authenticated %}
+        <a class="p-2 btn btn-danger" href="{% url 'booking_tables:booking_create' %}">Забронировать столик</a>
+        <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="p-2 btn btn-light">Выход
+            </button>
+        </form>
+        {% else %}
+        <a class="p-2 btn btn-light" href="{% url 'users:login' %}">Вход</a>
+        <a class="p-2 btn btn-light" href="{% url 'users:register' %}">Регистрация</a>
+        {% endif %}
+    </nav>
+</div>

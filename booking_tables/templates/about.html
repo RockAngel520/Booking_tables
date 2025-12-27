@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">О ресторане</h1>
+</div>
+
+
+<div class="container">
+    <div class="row text-start">
+        <div class="col-lg-9 col-md-6 col-sm-12">
+            <div class="card mb-4 box-shadow">
+                <div class="card-body">
+                    <h3 class="fs-3">Миссия и ценности</h3>
+                    <p class="card-text text-start">
+                        Место, обязательное к посещению для всех гостей края и страны. Мы
+                        расположены в самой востребованной и популярной локации города — парке «Краснодар». Мы являемся
+                        неотъемлемой частью современной культурной жизни на Юге.
+                    </p>
+                    <p class="card-text text-start">
+                        Позиционирование ресторана основано на современном подходе к Южной
+                        кухне, а главной цельюявляется стремление популяризировать локальный и сезонный продукт
+                        региона, показать его колоритв современной подаче. Специально для нас местные фермеры
+                        выращивают сезонные продукты, которые отвечают нашим стандартам качества.
+                    </p>
+                    <a class="p-3 ms-4 btn btn-outline-dark" href="/">Забронировать столик</a>
+                </div>
+            </div>
+            <div class="card mb-4 box-shadow">
+                <div class="card-body">
+                    <h3 class="fs-3">История ресторана</h3>
+                    <p class="card-text text-start">
+                        В 19 веке в Екатеринодаре жил хлебосольный атаман, отличавшийся европейскими манерами. В его
+                        доме трудились лучшие кухари Кубанского края. Наряду с ними в штате было несколько
+                        профессиональных поваров из Европы и Азии, которые готовили обильные и необыкновенно вкусные
+                        званые обеды в честь важных гостей Казачьего войска. Поваров привозили в качестве ценного
+                        военного трофея из боевых походов. За доставленного славного умельца, атаман награждал казака
+                        кинжалом работы златоустовских мастеров.
+                    </p>
+                    <p class="card-text text-start">
+                        Благодаря этому благородному капризу атаманский дом славился на весь Юг России великолепной
+                        кухней. Немало именитых людей того времени побывали в гостях у атамана.
+                        Ресторан «Стан» сохранил культуру и традиции больших званых обедов Высшего казачьего
+                        сословия.
+                    </p>
+                    <p class="card-text text-start">
+                        Особая гордость заведения — антикварное механическое воспроизводящее фортепиано Hupfeld со
+                        встроенной пианолой, которое было отреставрировано владельцами в мастерской именитого
+                        фортепианного мастера И. Ходжаева.
+                    </p>
+                    <p class="my-0 mr-md-auto font-weight-normal text-center">
+                        <img src="{% static '/images/zal.jpg' %}" alt="Кафе Краснодар" class="mx-auto p-2"
+                             style="width: 100%;"/>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal text-center">Наша команда</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <p class="text-center"><b>Шеф-повар 1:</b></p>
+                            <img src="{% static '/images/staff/1.jpg' %}" class="rounded mx-auto"
+                                 alt="Шеф-повар: Евгений Романов" class="mx-auto p-2"
+                                 style="width: 90px;"/>
+                            Евгений Романов
+                        </li>
+                        <li class="list-group-item">
+                            <p class="text-center"><b>Шеф-повар 2:</b></p>
+                            <img src="{% static '/images/staff/2.jpg' %}" class="rounded mx-auto"
+                                 alt="Шеф-повар: Олег Попов" class="mx-auto p-2"
+                                 style="width: 90px;"/>
+                            Олег Попов
+                        </li>
+                        <li class="list-group-item">
+                            <p class="text-center"><b>Управляющий:</b></p>
+                            <img src="{% static '/images/staff/3.jpg' %}" class="rounded mx-auto"
+                                 alt="Управляющий: Максим Иванкин" class="mx-auto p-2"
+                                 style="width: 90px;"/>
+                            Максим Иванкин
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

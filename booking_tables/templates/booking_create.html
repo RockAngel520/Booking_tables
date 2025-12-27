@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Бронирование столика</h1>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+        </div>
+        <div class="col-6">
+            <form class="row" method="post" enctype="multipart/form-data">
+                <div class="card">
+                    <div class="card-body">
+                        {% csrf_token %}
+                         <!-- Поле даты -->
+                        <div class="mb-4">
+                            <label for="id_date" class="form-label">{{ form.date.label }}</label>
+                            {{ form.date }}
+                            <div class="form-text">Выберите дату посещения</div>
+                        </div>
+
+                        <!-- Плитка времени -->
+                        <div class="mb-4">
+                            <label class="form-label d-block mb-3">Выберите время</label>
+                            <div class="time-grid" id="time-grid">
+                                <!-- Кнопки будут созданы JavaScript -->
+                            </div>
+
+                            <!-- Скрытое поле для хранения выбранного времени -->
+                            <input type="hidden" name="time" id="selected_time" value="">
+
+                            {% if form.time.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.time.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Остальные поля формы -->
+                        {% for field in form %}
+                            {% if field.name != 'date' and field.name != 'time' %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                                {% endif %}
+                                {% for error in field.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Создать
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-3">
+        </div>
+    </div>
+</div>
+<style>
+.time-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.time-btn {
+    width: 100%;
+    padding: 12px 5px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    background-color: white;
+}
+
+.time-btn:hover:not(.disabled):not(.active) {
+    background-color: #f8f9fa;
+}
+
+.time-btn.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+.time-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    color: #6c757d;
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+    .time-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .time-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('id_date');
+    const timeGrid = document.getElementById('time-grid');
+    const selectedTimeInput = document.getElementById('selected_time');
+    const bookingForm = document.getElementById('booking-form');
+
+    // Все доступные времена
+    const ALL_TIMES = [
+        '12:00', '13:00', '14:00', '15:00', '16:00',
+        '17:00', '18:00', '19:00', '20:00', '21:00',
+        '22:00', '23:00'
+    ];
+
+    // Функция для создания плитки времени
+    function createTimeGrid(availableTimes) {
+        timeGrid.innerHTML = '';
+
+        availableTimes.forEach(timeObj => {
+            const timeBtn = document.createElement('button');
+            timeBtn.type = 'button';
+            timeBtn.className = `time-btn ${timeObj.disabled ? 'disabled' : ''}`;
+            timeBtn.textContent = timeObj.label;
+            timeBtn.dataset.value = timeObj.value;
+
+            if (!timeObj.disabled) {
+                timeBtn.addEventListener('click', function() {
+                    // Убираем активный класс у всех кнопок
+                    document.querySelectorAll('.time-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+
+                    // Добавляем активный класс к выбранной
+                    this.classList.add('active');
+
+                    // Сохраняем выбранное значение
+                    selectedTimeInput.value = this.dataset.value;
+                });
+            }
+
+            timeGrid.appendChild(timeBtn);
+        });
+    }
+
+    // Функция для обновления плитки времени
+    function updateTimeGrid(selectedDate) {
+        const today = new Date().toISOString().split('T')[0];
+        const now = new Date();
+        const bufferTime = new Date(now.getTime() + 60 * 60 * 1000); // +1 час
+
+        const availableTimes = ALL_TIMES.map(timeStr => {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            const optionTime = new Date();
+            optionTime.setHours(hours, minutes, 0, 0);
+
+            // Если выбрана сегодняшняя дата и время меньше bufferTime - недоступно
+            const isDisabled = selectedDate === today && optionTime < bufferTime;
+
+            return {
+                value: timeStr,
+                label: timeStr,
+                disabled: isDisabled
+            };
+        });
+
+        createTimeGrid(availableTimes);
+
+        // Сбрасываем выбранное время
+        selectedTimeInput.value = '';
+        document.querySelectorAll('.time-btn.active').forEach(btn => {
+            btn.classList.remove('active');
+        });
+    }
+
+    // Обработчик изменения даты
+    dateInput.addEventListener('change', function() {
+        updateTimeGrid(this.value);
+    });
+
+    // Обработчик отправки формы - валидация на клиенте
+    bookingForm.addEventListener('submit', function(event) {
+        const selectedDate = dateInput.value;
+        const selectedTime = selectedTimeInput.value;
+        const today = new Date().toISOString().split('T')[0];
+
+        if (selectedDate === today && selectedTime) {
+            const now = new Date();
+            const bufferTime = new Date(now.getTime() + 60 * 60 * 1000);
+            const [hours, minutes] = selectedTime.split(':').map(Number);
+            const selectedTimeObj = new Date();
+            selectedTimeObj.setHours(hours, minutes, 0, 0);
+
+            if (selectedTimeObj < bufferTime) {
+                event.preventDefault();
+                alert(`На сегодня нельзя выбрать время раньше ${bufferTime.getHours()}:${bufferTime.getMinutes().toString().padStart(2, '0')}`);
+                return false;
+            }
+        }
+
+        if (!selectedTime) {
+            event.preventDefault();
+            alert('Пожалуйста, выберите время');
+            return false;
+        }
+    });
+
+    // Инициализация при загрузке
+    updateTimeGrid(dateInput.value);
+});
+</script>
+{% endblock %}
