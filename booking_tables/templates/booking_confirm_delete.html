@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Отмена брони #{{ object.id }}</h1>
+    {% if user.is_staff %}
+    <p class="list-group-item text-center">Забронировано на: {{ object.guest }}</p>
+    {% endif %}
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+        </div>
+        <div class="col-6">
+            <form class="row" method="post" enctype="multipart/form-data">
+                <div class="card">
+                    <h3 class="card-title pricing-card-title text-center m-3">Вы действительно хотите отменить
+                        бронь?</h3>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-start">Дата и время: {{ object.date }} в {{ object.time }}</li>
+                        <li class="list-group-item text-start">Количество гостей: {{ object.number_of_guests }}</li>
+                        {% if object.table.description %}
+                        <li class="list-group-item text-start">{{ object.table }} - {{ object.table.description }}</li>
+                        {% endif %}
+                        {% if object.comment %}
+                        <li class="list-group-item text-start">Ваш комментарий:<br>
+                        {{ object.comment }}</li>
+                        {% endif %}
+                        <li class="list-group-item text-end">Дата создания брони: {{ object.created_at }}</li>
+                    </ul>
+                    <div class="card-body">
+                        {% csrf_token %}
+                    </div>
+                    <div class="pt-md-2 pb-md-2 mx-auto">
+                        <button type="submit" class="btn btn-danger">
+                            Отменить бронь
+                        </button>
+                        <a class="btn btn-outline-secondary" href="{% url 'booking_tables:booking' booking.pk %}">
+                            Вернуться назад</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-3">
+        </div>
+    </div>
+</div>
+{% endblock %}

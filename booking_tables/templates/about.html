@@ -24,7 +24,12 @@
                         региона, показать его колоритв современной подаче. Специально для нас местные фермеры
                         выращивают сезонные продукты, которые отвечают нашим стандартам качества.
                     </p>
-                    <a class="p-3 ms-4 btn btn-outline-dark" href="/">Забронировать столик</a>
+                    {% if user.is_authenticated %}
+                    <a class="p-3 ms-4 btn btn-outline-dark" href="{% url 'booking_tables:booking_create' %}">Забронировать
+                        столик</a>
+                    {% else %}
+                    <a class="p-3 ms-4 btn btn-outline-dark" href="{% url 'users:register' %}">Забронировать столик</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="card mb-4 box-shadow">

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% now "Y-m-d" as today_str %}
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    {% if user.is_staff %}
+    <h1 class="display-4">Все бронирования с сайта</h1>
+    {% else %}
+    <h1 class="display-4">Ваши бронирования</h1>
+    {% endif %}
+</div>
+
+<div class="container">
+    <div class="row text-center">
+        <div class="col-1">
+        </div>
+        <div class="col-10 list-group">
+            {% for booking in object_list %}
+            <a href="{% url 'booking_tables:booking' booking.pk %}"
+               class="list-group-item d-flex justify-content-between align-items-center text-start">
+
+                {% if booking.date|date:"Y-m-d" < today_str %}
+                <del>
+                {% endif %}
+
+                    {% if user.is_staff %}
+                    <b>Забронировано на: {{ booking.guest }}</b>
+                    {% endif %}
+
+                {{ booking.table }} забронирован на {{ booking.date }} в {{ booking.time }} на
+                {{ booking.number_of_guests }} гостей
+
+                {% if booking.date|date:"Y-m-d" < today_str %}
+                </del>
+                {% endif %}
+
+                <span class="badge bg-dark text-white rounded-pill">бронь #{{ booking.id }} создана
+                        {{ booking.created_at }}</span>
+            </a>
+            {% endfor %}
+        </div>
+        <div class="col-1">
+        </div>
+    </div>
+</div>
+{% endblock %}
