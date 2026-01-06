@@ -49,7 +49,7 @@ class Booking(models.Model):
     number_of_guests = models.PositiveIntegerField(
         default=1,
         verbose_name="Количество гостей",
-        help_text=("Укажите " "количество гостей"),
+        help_text=("Укажите количество гостей"),
     )
     date = models.DateField(
         verbose_name="Дата посещения", help_text="Укажите дату посещения"
@@ -80,4 +80,32 @@ class Booking(models.Model):
     def __str__(self):
         return (
             f"Бронирование номер {self.id} от {self.guest} на {self.date} {self.time}"
+        )
+
+
+class Staff(models.Model):
+    """Модель сотрудников для страницы О нас"""
+
+    job_title = models.TextField(
+        verbose_name="Должность", help_text="Укажите должность", blank=True, null=True
+    )
+    full_name = models.TextField(
+        verbose_name="ФИО", help_text="Укажите ФИО", blank=True, null=True
+    )
+    photo = models.ImageField(
+        upload_to="booking_tables/media",
+        blank=True,
+        null=True,
+        verbose_name="Фото сотрудника",
+        help_text="Добавьте фото сотрудника",
+    )
+
+    class Meta:
+        verbose_name = "Сотрудник"
+        verbose_name_plural = "Сотрудники"
+        ordering = ["job_title", "full_name"]
+
+    def __str__(self):
+        return (
+            f"{self.job_title}: {self.full_name}"
         )

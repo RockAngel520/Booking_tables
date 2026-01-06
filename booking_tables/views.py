@@ -19,15 +19,16 @@ from django.views.generic import (
 )
 
 from booking_tables.forms import BookingForm
-from booking_tables.models import Booking, Table
+from booking_tables.models import Booking, Table, Staff
 from config.settings import EMAIL_HOST_USER
 
 logger = logging.getLogger(__name__)
 
 
-class AboutTemplateView(TemplateView):
+class AboutListView(ListView):
     """Страница о ресторане"""
 
+    model = Staff
     template_name = "about.html"
 
 

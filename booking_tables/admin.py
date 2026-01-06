@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from booking_tables.models import Booking, Table
+from booking_tables.models import Booking, Table, Staff
 
 
 @admin.register(Table)
@@ -20,4 +20,13 @@ class BookingAdmin(admin.ModelAdmin):
     search_fields = (
         "guest",
         "comment",
+    )
+
+
+@admin.register(Staff)
+class StaffAdmin(admin.ModelAdmin):
+    list_display = ("job_title", "full_name")
+    search_fields = (
+        "job_title",
+        "full_name",
     )

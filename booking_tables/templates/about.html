@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load my_tags %}
 {% load static %}
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -66,31 +67,19 @@
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal text-center">Наша команда</h4>
                 </div>
+                {% for staff in object_list %}
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <p class="text-center"><b>Шеф-повар 1:</b></p>
-                            <img src="{% static '/images/staff/1.jpg' %}" class="rounded mx-auto"
-                                 alt="Шеф-повар: Евгений Романов" class="mx-auto p-2"
+                            <p class="text-center"><b>{{ staff.job_title }}:</b></p>
+                            <img src="{{ staff.photo | media_filter }}" class="rounded mx-auto"
+                                 alt="{{ staff.job_title }}: {{ staff.full_name }}" class="mx-auto p-2"
                                  style="width: 90px;"/>
-                            Евгений Романов
-                        </li>
-                        <li class="list-group-item">
-                            <p class="text-center"><b>Шеф-повар 2:</b></p>
-                            <img src="{% static '/images/staff/2.jpg' %}" class="rounded mx-auto"
-                                 alt="Шеф-повар: Олег Попов" class="mx-auto p-2"
-                                 style="width: 90px;"/>
-                            Олег Попов
-                        </li>
-                        <li class="list-group-item">
-                            <p class="text-center"><b>Управляющий:</b></p>
-                            <img src="{% static '/images/staff/3.jpg' %}" class="rounded mx-auto"
-                                 alt="Управляющий: Максим Иванкин" class="mx-auto p-2"
-                                 style="width: 90px;"/>
-                            Максим Иванкин
+                            {{ staff.full_name }}
                         </li>
                     </ul>
                 </div>
+                {% endfor %}
             </div>
         </div>
     </div>
