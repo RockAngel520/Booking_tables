@@ -443,8 +443,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Обновляем текст помощи
         if (guests > 0) {
-            guestsHelp.textContent = `Выбрано ${guests} гостей`;
-            guestsHelp.style.color = '#198754';
+            if (guests > 6) {
+                guestsHelp.textContent = 'Для бронирования свяжитесь, пожалуйста, с нами по телефону';
+                guestsHelp.style.color = '#dc3545';
+            } else {
+                guestsHelp.textContent = `Выбрано ${guests} гостей`;
+                guestsHelp.style.color = '#198754';
+            }
         } else {
             guestsHelp.textContent = 'Укажите количество гостей';
             guestsHelp.style.color = '#6c757d';
