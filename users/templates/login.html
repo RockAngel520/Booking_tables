@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Вход на сайт</h1>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+        </div>
+        <div class="col-6">
+            <form class="row" method="post" enctype="multipart/form-data">
+                <div class="card p-4">
+                    <div class="card-body">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                    </div>
+                    <button type="submit" class="btn btn-outline-dark ms-3 me-3 mb-4">
+                        Войти
+                    </button>
+                    <a class="text-end" href="{% url 'users:register' %}">Еще не зарегистрированы?</a>
+                </div>
+            </form>
+        </div>
+        <div class="col-3">
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.card-body input:not([type="checkbox"]):not([type="radio"])').forEach(function(input) {
+            input.classList.add('form-control');
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load my_tags %}
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a class="text-muted" href="/">Главная</a></li>
+            <li class="breadcrumb-item"><a class="text-muted" href="{% url 'booking_tables:bookings' %}">
+                Мои бронирования
+            </a></li>
+            <li class="breadcrumb-item active" aria-current="page">Бронь #{{ object.id }}</li>
+        </ol>
+    </nav>
+</div>
+<div class="container">
+    <div class="row text-center">
+        <div class="col-lg-3 col-md-1 col-sm-0">
+        </div>
+        <div class="col-lg-6 col-md-10 col-sm-12">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h1 class="my-0 font-weight-normal">Ваша бронь #{{ object.id }}</h1>
+                </div>
+                <img class="m-5" src="{{ object.table.image | media_filter }}">
+                <div class="card-body d-grid gap-2">
+                    <h2 class="card-title pricing-card-title text-center">{{ object.table }}</h2>
+                    <ul class="list-group list-group-flush">
+                        {% if user.is_staff %}
+                        <li class="list-group-item text-start">Забронировано на: {{ object.guest }}</li>
+                        {% endif %}
+                        <li class="list-group-item text-start">Дата и время: {{ object.date }} в {{ object.time }}</li>
+                        <li class="list-group-item text-start">Количество гостей: {{ object.number_of_guests }}</li>
+                        {% if object.table.description %}
+                        <li class="list-group-item text-start">{{ object.table }} - {{ object.table.description }}</li>
+                        {% endif %}
+                        {% if object.comment %}
+                        <li class="list-group-item text-start">Ваш комментарий:<br>
+                        {{ object.comment }}</li>
+                        {% endif %}
+                        <li class="list-group-item text-end">Дата создания брони: {{ object.created_at }}</li>
+                    </ul>
+                    <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto">
+                        <a class="btn btn-outline-dark"
+                           href="{% url 'booking_tables:booking_update' booking.pk %}">Изменить</a>
+                        <a class="btn btn-outline-danger"
+                           href="{% url 'booking_tables:booking_confirm_delete' booking.pk %}">Отменить бронь</a>
+                        <a class="btn btn-outline-secondary" href="{% url 'booking_tables:bookings' %}">Вернуться назад</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-1 col-sm-0">
+        </div>
+    </div>
+</div>
+{% endblock %}

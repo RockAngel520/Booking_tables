@@ -1,0 +1,78 @@
+{% load static %}
+
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom box-shadow bg-dark text-white">
+
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <p class="my-0 mr-md-auto font-weight-normal text-center">
+                <a href="/">
+                    <img src="{% static '/images/logo.png' %}" alt="Кафе Краснодар" class="mx-auto p-2"
+                         style="width: 280px;"/>
+                </a>
+                <br>
+                ресторан современных вкусов
+            </p>
+            <a class="btn btn-dark" href="/">Главная</a>
+            <a class="btn btn-dark" href="{% url 'booking_tables:tables' %}">Столики</a>
+
+            {% if user.is_authenticated %}
+            <a class="btn btn-danger" href="{% url 'booking_tables:booking_create' %}">Забронировать
+                столик</a>
+            {% else %}
+            <a class="btn btn-danger" href="{% url 'users:register' %}">Забронировать столик</a>
+            {% endif %}
+            <a class="btn btn-dark" href="{% url 'booking_tables:about' %}">О нас</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
+                 aria-labelledby="offcanvasDarkNavbarLabel">
+                <div class="offcanvas-header">
+                    <p class="my-0 mr-md-auto font-weight-normal text-center">
+                        <a href="/">
+                            <img src="{% static '/images/logo.png' %}" alt="Кафе Краснодар" class="mx-auto p-2"
+                                 style="width: 280px;"/>
+                        </a>
+                        <br>
+                        ресторан современных вкусов
+                    </p>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                            aria-label="Close"></button>
+                </div>
+
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'booking_tables:bookings' %}">
+                                {% if user.is_staff %}
+                                Все бронирования
+                                {% else %}
+                                Мои брони
+                                {% endif %}
+                            </a>
+                        </li>
+                        <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+                            {% csrf_token %}
+                            <li class="nav-item">
+                                <button type="submit" class="nav-link">Выход
+                                </button>
+                            </li>
+                        </form>
+                        {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Вход</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:register' %}">Регистрация</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+</div>
+<br><br><br>

@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center mb-5">
+    <p class="my-0 mr-md-auto font-weight-normal text-center ">
+        <img src="{% static '/images/logo-big.png' %}" alt="Кафе Краснодар" class="mx-auto p-2"
+             style="width: 43%;"/>
+    </p>
+</div>
+
+
+<div class="container">
+    <div class="row text-start">
+        <div class="col-2">
+        </div>
+        <div class="col-8">
+            <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                <div class="card-body">
+                    <p class="card-text text-center">
+                        МЕСТО, ОБЯЗАТЕЛЬНОЕ К ПОСЕЩЕНИЮ ДЛЯ ВСЕХ ГОСТЕЙ КРАЯ И СТРАНЫ. МЫ РАСПОЛОЖЕНЫ В САМОЙ
+                        ВОСТРЕБОВАННОЙ И ПОПУЛЯРНОЙ ЛОКАЦИИ ГОРОДА — ПАРКЕ «КРАСНОДАР». НАШЕЙ ГЛАВНОЙ ЦЕЛЬЮ ЯВЛЯЕТСЯ
+                        ПОПУЛЯРИЗАЦИЯ ЛОКАЛЬНОГО И СЕЗОННОГО ПРОДУКТА РЕГИОНА
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+        </div>
+        <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+            <h3 class="display-4">Услуги ресторана</h3>
+        </div>
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <a href="/">
+                        <div class="card text-bg-dark">
+                            <img src="{% static '/images/services/reserve.jpg' %}" class="card-img" alt="Бронирование">
+                            <div class="card-img-overlay">
+                                <h5 class="card-title fs-2 text-start">БРОНИРОВАНИЕ СТОЛИКОВ</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <a href="#">
+                        <div class="card text-bg-dark">
+                            <img src="{% static '/images/services/gastrotur.jpg' %}" class="card-img" alt="Гастротур">
+                            <div class="card-img-overlay">
+                                <h5 class="card-title fs-2 text-start">ГАСТРОТУР "КУБАНСКАЯ УСЛАДА"</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <a href="#">
+                        <div class="card text-bg-dark">
+                            <img src="{% static '/images/services/lica.jpg' %}" class="card-img" alt="Мероприятия">
+                            <div class="card-img-overlay">
+                                <h5 class="card-title fs-2 text-start">ИСТОРИКО-ГАСТРОНОМИЧЕСКИЕ МЕРОПРИЯТИЯ</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <a href="#">
+                        <div class="card text-bg-dark">
+                            <img src="{% static '/images/services/fotosessiya.jpg' %}" class="card-img"
+                                 alt="Фотосессии">
+                            <div class="card-img-overlay">
+                                <h5 class="card-title fs-2 text-start">ФОТОСЕССИИ НА ТЕРРИТОРИИ РЕСТОРАНА</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <a href="#">
+                        <div class="card text-bg-dark">
+                            <img src="{% static '/images/services/furshet.jpg' %}" class="card-img" alt="Фуршеты">
+                            <div class="card-img-overlay">
+                                <h5 class="card-title fs-2 text-start">БАНКЕТЫ, ФУРШЕТЫ, ДЕГУСТАЦИИ</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <a href="#">
+                        <div class="card text-bg-dark">
+                            <img src="{% static '/images/services/svadba.jpg' %}" class="card-img" alt="Свадьбы">
+                            <div class="card-img-overlay">
+                                <h5 class="card-title fs-2 text-start">ПРОВЕДЕНИЕ СВАДЕБНЫХ ТОРЖЕСТВ</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">Ждем Вас</h1>
+    </div>
+    <div class="row text-start">
+        <div class="col-lg-8 col-md-6 col-sm-12">
+            <div class="card mb-4 box-shadow">
+                <div class="card-body">
+                    <table class="table table-striped text-center">
+                        <tr>
+                            <td>c 12-00 до 24-00</td>
+                        </tr>
+                        <tr>
+                            <td>г. Краснодар ул. Кубанская Набережная, 15</td>
+                        </tr>
+                        <tr>
+                            <td>restoran-stan@mail.ru</td>
+                        </tr>
+                        <tr>
+                            <td>+7 (918) 330-16-16</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <script type="text/javascript" charset="utf-8" async
+                                        src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Aa11a9041de4250601ffc83851d11447cb6c1158543f10382335658bf39801b4f&amp;width=100%25&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal text-center">Свяжитесь с нами</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="" class="form-floating">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name">Имя</label>
+                            <input type="text" name="name" class="form-control" id="name" placeholder="Ваше имя"
+                                   required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone">Телефон</label>
+                            <input type="text" name="phone" class="form-control" id="phone"
+                                   placeholder="Контактный телефон" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message">Сообщение</label>
+                            <textarea type="text" name="message" class="form-control" id="message"
+                                      placeholder="Введите Ваше сообщение" required></textarea>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-lg btn-block btn-outline-dark" tabindex="-1" aria-disabled="true" role="button">
+                                Отправить
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

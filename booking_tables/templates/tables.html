@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load my_tags %}
+{% load static %}
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Столики в нашем ресторане</h1>
+</div>
+
+<div class="container">
+    <div class="row text-center">
+        {% for table in object_list %}
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            {% if table.is_publish == True %}
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Столик №{{ table.number }}</h4>
+                </div>
+                <img src="{{ table.image | media_filter }}">
+                <div class="card-body">
+                    <p class="card-text">{{ table.description|truncatechars:100 }}</p>
+                    {% if user.is_authenticated == True %}
+                    <a class="d-grid gap-2 btn btn-outline-dark"
+                       href="{% url 'booking_tables:booking_create' %}">Забронировать
+                    </a>
+                    {% endif %}
+                    {% if user.is_authenticated == False %}
+                    <a class="d-grid gap-2 btn btn-outline-dark"
+                       href="{% url 'users:login' %}">Забронировать
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
